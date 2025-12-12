@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estimator – Dashboard</title>
+
+  <!-- Base CSS -->
+  <link rel="stylesheet" href="./assets/css/base/reset.css" />
+  <link rel="stylesheet" href="./assets/css/base/variables.css" />
+  <link rel="stylesheet" href="./assets/css/base/components.css" />
+  <link rel="stylesheet" href="./assets/css/base/layout.css" />
+
+  <!-- Dashboard CSS -->
+  <link rel="stylesheet" href="./assets/css/app/index.css" />
+</head>
+
+<body>
+
+  <!-- MAIN -->
+  <main class="container page dashboard">
+    <section class="welcome-block card">
+      <h1>Dashboard Estimator</h1>
+      <p class="subtitle">
+        Alat perhitungan bahan & tenaga paling cepat dan praktis untuk pekerjaan konstruksi.
+      </p>
+    </section>
+
+    <!-- FEATURE GRID -->
+    <section class="feature-grid">
+      
+      <div class="feature-card card">
+        <div class="icon">📏</div>
+        <h2>Single Estimator</h2>
+        <p>Hitung kebutuhan bahan & tenaga untuk satu pekerjaan secara instan.</p>
+        <a href="./pages/single.html" class="btn primary">Buka</a>
+      </div>
+
+      <div class="feature-card card">
+        <div class="icon">📋</div>
+        <h2>Multi Estimator</h2>
+        <p>Kombinasikan beberapa pekerjaan sekaligus untuk perhitungan skala proyek.</p>
+        <a href="./pages/multi.html" class="btn">Buka</a>
+      </div>
+
+      <div class="feature-card card disabled">
+        <div class="icon">📑</div>
+        <h2>RAB</h2>
+        <p>Modul RAB akan tersedia pada update berikutnya.</p>
+        <!-- <button class="btn disabled">Segera Hadir</button> -->
+      </div>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      © Estimator — versi 6
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initTheme } from './assets/js/core/theme.js';
+    initTheme('#darkToggle');
+  </script>
+</body>
+</html>

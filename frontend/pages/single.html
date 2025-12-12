@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Single Estimator — Final</title>
+
+  <!-- Base CSS -->
+  <link rel="stylesheet" href="../assets/css/base/reset.css">
+  <link rel="stylesheet" href="../assets/css/base/variables.css">
+  <link rel="stylesheet" href="../assets/css/base/components.css">
+  <link rel="stylesheet" href="../assets/css/base/layout.css">
+
+  <!-- Page CSS -->
+  <link rel="stylesheet" href="../assets/css/app/single.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand"><a href="../index.html">Estimator</a></div>
+
+    <!-- <nav class="nav">
+      <a href="single.html" class="active">Single</a>
+      <a href="multi.html">Multi</a>
+    </nav> -->
+
+    <div class="header-actions">
+      <button id="darkToggleSingle" class="icon-btn">🌓</button>
+    </div>
+  </div>
+</header>
+
+<main class="app-viewport">
+  <div class="container page grid-single">
+
+    <!-- LEFT PANEL -->
+    <aside class="card halo left-panel">
+
+      <div class="panel-title">Single Estimator</div>
+
+      <div class="search-wrap">
+
+        <!-- SEARCH -->
+        <label class="search-label">
+          Cari Pekerjaan
+          <input
+            id="searchPekerjaan"
+            class="search-input"
+            placeholder="Ketik nama pekerjaan..."
+            autocomplete="off"
+          />
+        </label>
+
+        <!-- DROPDOWN -->
+        <label class="dropdown-label">
+          Pilih Pekerjaan
+          <select id="pekerjaanSelect" class="dropdown"></select>
+        </label>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+          <label>
+            Volume
+            <input
+              id="volumeSingle"
+              class="input-compact"
+              type="number"
+              step="0.01"
+              min="0"
+              value="1.00"
+            />
+          </label>
+
+          <button id="computeSingle" class="btn primary" disabled>
+            Hitung
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- RIGHT PANEL -->
+    <section class="card halo right-panel">
+      <div class="results-grid">
+
+        <!-- BAHAN -->
+        <div class="results-block">
+          <div class="results-title">Hasil - Bahan</div>
+
+          <div class="table-wrap">
+            <table class="table-premium" id="bahanTableSingle">
+              <thead>
+                <tr>
+                  <th class="col-name sticky-col">Nama Bahan</th>
+                  <th class="col-qty">Jumlah</th>
+                  <th class="col-unit">Satuan</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TENAGA -->
+        <div class="results-block">
+          <div class="results-title">Hasil - Tenaga</div>
+
+          <div class="table-wrap">
+            <table class="table-premium" id="tenagaTableSingle">
+              <thead>
+                <tr>
+                  <th class="col-name sticky-col">Nama Tenaga</th>
+                  <th class="col-qty">Jumlah</th>
+                  <th class="col-unit">Satuan</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script type="module">
+  import { initTheme } from "../assets/js/core/theme.js";
+  import { initSingle } from "../assets/js/programs/single.js";
+
+  initTheme("#darkToggleSingle");
+  initSingle();
+
+  /* HEADER SHADOW ON SCROLL */
+  const rp = document.querySelector(".right-panel");
+  rp.addEventListener("scroll", () => {
+    const th = document.querySelectorAll(".table-premium thead th");
+    if (rp.scrollTop > 0)
+      th.forEach(h => h.classList.add("sticky-shadow"));
+    else
+      th.forEach(h => h.classList.remove("sticky-shadow"));
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+/* components.css - buttons, cards, table base */
+.container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+.card { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow-sm); }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(15,23,42,0.06); font-weight: 600; color: var(--text); background: transparent; }
+.btn.primary { background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 80%, #1e40af 20%)); color: #fff; border: none; box-shadow: 0 6px 14px rgba(37,99,235,0.08); }
+
+/* small helpers */
+.right { text-align: right; }
+.table-wrap { overflow: auto; }
+.fab { position: fixed; right: 18px; bottom: 18px; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; box-shadow: var(--shadow-md); background: var(--primary); color: #fff; border: none; }
+.input { padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(15,23,42,0.06); background: transparent; }
