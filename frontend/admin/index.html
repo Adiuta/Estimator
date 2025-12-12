@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Estimator</title>
+
+  <link rel="stylesheet" href="../assets/css/base/reset.css">
+  <link rel="stylesheet" href="../assets/css/base/variables.css">
+  <link rel="stylesheet" href="../assets/css/base/components.css">
+  <link rel="stylesheet" href="../assets/css/app/single.css">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand"><a href="../index.html">Estimator</a></div>
+    <div class="header-actions">
+      <button id="logoutBtn" class="btn danger">Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="admin-container">
+  <aside class="sidebar">
+    <div class="nav-grid">
+      <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+      <button class="nav-btn" data-target="harga">Harga / RAB</button>
+      <button class="nav-btn" data-target="materials">Bahan</button>
+      <button class="nav-btn" data-target="pekerjaan">Pekerjaan</button>
+      <button class="nav-btn" data-target="tenaga">Tenaga</button>
+      <button class="nav-btn" data-target="users">User</button>
+      <button class="nav-btn" data-target="projects">Proyek</button>
+    </div>
+  </aside>
+
+  <section class="content card halo" id="adminContent">
+    <!-- dynamic content injected here -->
+    <div id="adminMain">
+      <h1>Admin Dashboard</h1>
+      <p class="muted">Klik menu di kiri untuk mengelola data.</p>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+  </section>
+</main>
+
+<!-- admin scripts -->
+<script>
+  // set API base to backend root /api
+  window.API_BASE = window.API_BASE || (window.location.origin + "/api");
+</script>
+<script type="module" src="./admin.js"></script>
+</body>
+</html>

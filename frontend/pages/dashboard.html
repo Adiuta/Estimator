@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard</title>
+
+  <!-- Base CSS -->
+  <link rel="stylesheet" href="../assets/css/base/reset.css">
+  <link rel="stylesheet" href="../assets/css/base/variables.css">
+  <link rel="stylesheet" href="../assets/css/base/components.css">
+  <link rel="stylesheet" href="../assets/css/base/layout.css">
+
+  <!-- Admin CSS -->
+  <link rel="stylesheet" href="../assets/css/app/admin.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">Admin Panel</div>
+    <div class="header-actions">
+      <button id="logoutBtn" class="btn danger small">Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="admin-container">
+
+  <aside class="sidebar">
+    <nav>
+      <a href="./dashboard.html" class="active">Dashboard</a>
+      <a href="./pekerjaan.html">Pekerjaan</a>
+      <a href="./materials.html">Material</a>
+      <a href="./tenaga.html">Tenaga Kerja</a>
+      <a href="./projects.html">Proyek</a>
+      <a href="./users.html">User</a>
+    </nav>
+  </aside>
+
+  <section class="content card halo">
+    <h1 class="admin-title">Dashboard</h1>
+    <p class="muted">Selamat datang di Admin Panel. Kelola database estimator dan manajemen user di sini.</p>
+
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-value" id="statPekerjaan">0</div>
+        <div class="stat-label">Pekerjaan</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="statMaterial">0</div>
+        <div class="stat-label">Material</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="statTenaga">0</div>
+        <div class="stat-label">Tenaga Kerja</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="statProjects">0</div>
+        <div class="stat-label">Proyek Tersimpan</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-value" id="statUsers">0</div>
+        <div class="stat-label">User</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module">
+  import { initAdmin, apiGetAuth } from "./admin.js";
+
+  initAdmin(async () => {
+    const pekerjaan = await apiGetAuth("/pekerjaan");
+    const material = await apiGetAuth("/materials");
+    const tenaga = await apiGetAuth("/tenaga");
+    const projects = await apiGetAuth("/project/admin/list");
+    const users = await apiGetAuth("/admin/users");
+
+    document.getElementById("statPekerjaan").textContent = pekerjaan.length;
+    document.getElementById("statMaterial").textContent = material.length;
+    document.getElementById("statTenaga").textContent = tenaga.length;
+    document.getElementById("statProjects").textContent = projects.length;
+    document.getElementById("statUsers").textContent = users.length;
+  });
+</script>
+
+</body>
+</html>

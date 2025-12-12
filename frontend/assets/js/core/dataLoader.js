@@ -1,5 +1,5 @@
 // frontend/assets/js/core/dataLoader.js
-const API = "http://localhost:3000/api"; // ganti kalau backend di-deploy
+const API = window.API_BASE || (window.location.origin.includes("http") ? (window.location.origin + "/api") : "/api");
 
 export const masterData = {
   pekerjaan: [],
