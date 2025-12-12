@@ -1,162 +1,109 @@
-import { $, $$, el } from "../core/dom.js";
+// ===========================
+// SINGLE ESTIMATOR — FINAL FIX
+// ===========================
+
+import { $, el } from "../core/dom.js";
 import { fmt2 } from "../core/utils.js";
-
-const API = "http://localhost:3000/api";
-
-let pekerjaanData = [];
-let materialsMap = {};
-let tenagaMap = {};
+import { loadMasterData, masterData } from "../core/dataLoader.js";
+import { buildDropdown, filterDropdown } from "../core/dropdown.js";
 
 let selectedPekerjaan = null;
 
-// ------------ FORMAT NUMBER ------------
-function formatNumber(n) {
-  if (n == null || isNaN(n)) return "0";
-  const v = Number(n);
-  return v % 1 === 0 ? v.toString() : v.toFixed(3).replace(/\.?0+$/, "");
-}
-
-// ------------ INIT ------------
+// ========================================
+// INIT
+// ========================================
 export async function initSingle() {
-  await loadAllData();
-  initDropdown(pekerjaanData);
-  initSearch();
-  initCompute();
-}
+  await loadMasterData();
 
-// ------------ LOAD DATA ------------
-async function loadAllData() {
-  const [pekerjaan, materials, tenaga] = await Promise.all([
-    fetch(`${API}/pekerjaan`).then(r => r.json()),
-    fetch(`${API}/materials`).then(r => r.json()),
-    fetch(`${API}/tenaga`).then(r => r.json())
-  ]);
+  console.log("[SINGLE] master data loaded");
 
-  pekerjaanData = pekerjaan;
-  materialsMap = Object.fromEntries(materials.map(m => [m._id, m]));
-  tenagaMap = Object.fromEntries(tenaga.map(t => [t._id, t]));
-}
-
-// ------------ DROPDOWN ------------
-function initDropdown(list) {
+  // ==== MATCH with single.html ====
   const select = $("#pekerjaanSelect");
-  select.innerHTML = "";
+  const search = $("#searchPekerjaan");
+  const volumeInput = $("#volumeSingle");
+  const hitungBtn = $("#computeSingle");
 
-  // placeholder
-  const ph = el("option");
-  ph.textContent = "— Pilih pekerjaan —";
-  ph.disabled = true;
-  ph.selected = true;
-  select.appendChild(ph);
+  buildDropdown(select);
 
-  list.forEach(item => {
-    const op = el("option");
-    op.value = item._id;
-    op.textContent = item.nama;
-    select.appendChild(op);
+  // Search handler
+  search.addEventListener("input", () => {
+    selectedPekerjaan = filterDropdown(search.value, select);
+    updateButtonState();
   });
 
-  // EVENT: selalu update selectedPekerjaan
+  // Dropdown handler
   select.addEventListener("change", () => {
-    selectedPekerjaan = pekerjaanData.find(p => p._id === select.value);
+    selectedPekerjaan =
+      masterData.pekerjaan.find(p => p._id === select.value);
+    updateButtonState();
   });
+
+  // Volume handler
+  volumeInput.addEventListener("input", updateButtonState);
+
+  // Hitung klik
+  hitungBtn.addEventListener("click", () => {
+    const volume = parseFloat(volumeInput.value);
+    if (!selectedPekerjaan || !isFinite(volume) || volume <= 0) return;
+
+    hitungSingle(selectedPekerjaan, volume);
+  });
+
+  updateButtonState();
 }
 
-// ------------ SEARCH ------------
-function initSearch() {
-  const input = $("#searchPekerjaan");
-  const select = $("#pekerjaanSelect");
-
-  let t = null;
-
-  input.addEventListener("input", () => {
-    clearTimeout(t);
-    t = setTimeout(() => {
-      const q = input.value.toLowerCase().trim();
-      let filtered = pekerjaanData;
-
-      if (q) filtered = pekerjaanData.filter(p => p.nama.toLowerCase().includes(q));
-
-      initDropdown(filtered);
-
-      // IMPORTANT → set selected automatically when 1 result
-      if (filtered.length === 1) {
-        select.value = filtered[0]._id;
-        selectedPekerjaan = filtered[0];
-      }
-    }, 120);
-  });
+// ========================================
+// ENABLE / DISABLE BUTTON
+// ========================================
+function updateButtonState() {
+  const volume = parseFloat($("#volumeSingle").value);
+  $("#computeSingle").disabled =
+    !(selectedPekerjaan && isFinite(volume) && volume > 0);
 }
 
-// ------------ COMPUTE ------------
-function initCompute() {
-  const btn = $("#computeSingle");
-  const volInput = $("#volumeSingle");
+// ========================================
+// HITUNG
+// ========================================
+function hitungSingle(pekerjaan, volume) {
+  const bahanTable = $("#bahanTableSingle tbody");
+  const tenagaTable = $("#tenagaTableSingle tbody");
 
-  btn.addEventListener("click", () => {
-    if (!selectedPekerjaan) {
-      alert("Pilih pekerjaan dahulu.");
-      return;
-    }
+  bahanTable.innerHTML = "";
+  tenagaTable.innerHTML = "";
 
-    const vol = parseFloat(volInput.value);
-    if (isNaN(vol) || vol <= 0) {
-      alert("Volume tidak valid.");
-      return;
-    }
+  // ======================
+  // BAHAN
+  // ======================
+  (pekerjaan.bahan || []).forEach(b => {
+    const m = masterData.materialsMap[b.materialId];
+    const jumlah = (Number(b.koefisien) || 0) * volume;
+    const nama = m?.nama || b.materialId;
+    const satuan = m?.satuan || "-";
 
-    const result = compute(selectedPekerjaan, vol);
-    renderResult(result);
-  });
-}
-
-function compute(pk, volume) {
-  const bahan = pk.bahan.map(b => {
-    const m = materialsMap[b.materialId];
-    return {
-      nama: m?.nama || "(Material tidak ditemukan)",
-      jumlah: b.koefisien * volume,
-      satuan: m?.satuan || "-"
-    };
-  });
-
-  const tenaga = pk.tenaga.map(t => {
-    const w = tenagaMap[t.tenagaId];
-    return {
-      nama: w?.nama || "(Tenaga tidak ditemukan)",
-      jumlah: t.koefisien * volume,
-      satuan: w?.satuan || "-"
-    };
-  });
-
-  return { bahan, tenaga };
-}
-
-// ------------ RENDER ------------
-function renderResult({ bahan, tenaga }) {
-  const tbB = $("#bahanTableSingle tbody");
-  const tbT = $("#tenagaTableSingle tbody");
-
-  tbB.innerHTML = "";
-  tbT.innerHTML = "";
-
-  bahan.forEach(r => {
     const tr = el("tr");
     tr.innerHTML = `
-      <td class="col-name">${r.nama}</td>
-      <td class="col-qty align-right">${formatNumber(r.jumlah)}</td>
-      <td class="col-unit">${r.satuan}</td>
+      <td class="col-name sticky-col">${nama}</td>
+      <td class="col-qty">${fmt2(jumlah)}</td>
+      <td class="col-unit">${satuan}</td>
     `;
-    tbB.appendChild(tr);
+    bahanTable.appendChild(tr);
   });
 
-  tenaga.forEach(r => {
+  // ======================
+  // TENAGA
+  // ======================
+  (pekerjaan.tenaga || []).forEach(t => {
+    const tn = masterData.tenagaMap[t.tenagaId];
+    const jumlah = (Number(t.koefisien) || 0) * volume;
+    const nama = tn?.nama || t.tenagaId;
+    const satuan = tn?.satuan || "-";
+
     const tr = el("tr");
     tr.innerHTML = `
-      <td class="col-name">${r.nama}</td>
-      <td class="col-qty align-right">${formatNumber(r.jumlah)}</td>
-      <td class="col-unit">${r.satuan}</td>
+      <td class="col-name sticky-col">${nama}</td>
+      <td class="col-qty">${fmt2(jumlah)}</td>
+      <td class="col-unit">${satuan}</td>
     `;
-    tbT.appendChild(tr);
+    tenagaTable.appendChild(tr);
   });
 }

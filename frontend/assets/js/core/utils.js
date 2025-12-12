@@ -1,27 +1,26 @@
-/* utils.js — formatting and finders */
-export const ceil2 = v => Math.ceil((Number(v) || 0) * 100) / 100;
-export const fmt2 = v => (Number(v) || 0).toFixed(2);
+// utils.js
+// Formatting & math helpers
 
-let _materials = [], _tenaga = [], _pekerjaan = [];
-
-export function setData({ materials, tenaga, pekerjaan }) {
-  _materials = materials || [];
-  _tenaga = tenaga || [];
-  _pekerjaan = pekerjaan || [];
+// Format decimal to 2 decimal places
+export function fmt2(val) {
+  const n = Number(val);
+  if (!isFinite(n)) return "0.00";
+  return n.toFixed(2);
 }
 
-export function findMaterial(key) {
-  return _materials.find(m =>
-    m._id === key ||
-    m.key === key ||
-    (m.nama && m.nama.toLowerCase() === String(key).toLowerCase())
-  ) || null;
+// Format with thousand separators
+export function fmtNum(val) {
+  const n = Number(val);
+  if (!isFinite(n)) return "0";
+  return n.toLocaleString("id-ID");
 }
 
-export function findTenaga(key) {
-  return _tenaga.find(t =>
-    t._id === key ||
-    t.key === key ||
-    (t.nama && t.nama.toLowerCase() === String(key).toLowerCase())
-  ) || null;
+// Format currency (if needed for future RAB)
+export function fmtRp(val) {
+  const n = Number(val);
+  if (!isFinite(n)) return "Rp 0";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR"
+  }).format(n);
 }

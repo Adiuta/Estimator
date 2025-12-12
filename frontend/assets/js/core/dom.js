@@ -1,18 +1,26 @@
-/* dom.js — small DOM helpers */
-export const $ = (sel, root = document) => root.querySelector(sel);
-export const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+// dom.js
+// Lightweight DOM helpers for cleaner code
 
-export function el(tag, attrs = {}, children = []) {
-  const d = document.createElement(tag);
-  Object.entries(attrs || {}).forEach(([k, v]) => {
-    if (k.startsWith("on") && typeof v === "function") d.addEventListener(k.slice(2), v);
-    else if (k === "class") d.className = v;
-    else if (k === "html") d.innerHTML = v;
-    else d.setAttribute(k, v);
-  });
-  (Array.isArray(children) ? children : [children]).forEach(c => {
-    if (typeof c === "string") d.appendChild(document.createTextNode(c));
-    else if (c) d.appendChild(c);
-  });
-  return d;
+export const $ = (q, scope = document) => scope.querySelector(q);
+export const $$ = (q, scope = document) => [...scope.querySelectorAll(q)];
+
+export function el(tag, props = {}) {
+  const e = document.createElement(tag);
+  Object.assign(e, props);
+  return e;
+}
+
+// Add CSS class
+export function addClass(el, cls) {
+  if (el) el.classList.add(cls);
+}
+
+// Remove CSS class
+export function removeClass(el, cls) {
+  if (el) el.classList.remove(cls);
+}
+
+// Toggle CSS class
+export function toggleClass(el, cls) {
+  if (el) el.classList.toggle(cls);
 }

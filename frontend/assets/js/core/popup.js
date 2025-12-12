@@ -1,8 +1,17 @@
-/* popup.js — minimal wrappers for now */
-export function toast(msg) {
-  // simple accessible toast using alert; replace with custom toast if needed
-  alert(msg);
+// popup.js
+export function openPopup(id) {
+  document.querySelector(id)?.classList.remove("hidden");
 }
-export function confirmDelete(msg) {
-  return confirm(msg);
+
+export function closePopup(id) {
+  document.querySelector(id)?.classList.add("hidden");
+}
+
+export function bindPopup(trigger, popup, closeBtn) {
+  document.querySelector(trigger)?.addEventListener("click", () =>
+    openPopup(popup)
+  );
+  document.querySelector(closeBtn)?.addEventListener("click", () =>
+    closePopup(popup)
+  );
 }
